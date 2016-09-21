@@ -1,0 +1,100 @@
+---
+title: Using the a9s Consul DNS for PCF
+owner: Partners
+---
+
+This topic describes how to use the a9s Consul DNS for PCF.
+
+##<a id='using'></a> Using the a9s Consul DNS for PCF
+
+Once installed, the a9s Consul DNS for PCF tile is used by other tiles to
+resolve the hostnames of the nodes they are creating.
+
+In case any of the a9s Data Service or the a9s BOSH for PCF tile is installed,
+the a9s Consul DNS for PCF must be registered in the Ops Manager Network Settings
+as default DNS. The following chapter explains how this can be achieved.
+
+###<a id='registering'></a> Registering a9s Consul DNS in the Ops Manager Network Settings
+
+The following procedure describes how to register the a9s Consul DNS as the default DNS.
+
+1. Open the PCF Ops Manager.
+
+2. Click on the **a9s Consul DNS for PCF** tile.
+
+3. Click on the **Status** tab.
+
+4. Note the IP adresses of the dnsmasqs.
+
+5. Go back to the PCF Ops Manager tiles overview.
+
+6. Click on the **Ops Manager Director** tile.
+
+7. Open the **Create Network** category.
+
+8. Under *networks*, open your **subnets** tabs.
+
+9. Replace the entry for DNS with the IPs of your dnsmasq VMs that **don't
+belong to the same subnet**.
+
+####<a id='dns-subnet'></a> What DNS to set for which subnet?
+
+In a highly available setup, three infrastructure availability zones have been configured. Each availability zone is configured with a dedicted subnet. In order to make a9s Consul DNS highly available, its three DNS nodes are distributed across the availability zones.
+
+Technically, it is not possible to use an a9s Consul DNS server as nameserver within the specific subnet its VMs has been provisioned to.
+Therefore, we advise applying either of the following two strategies for your
+installation:
+
+1. For production environments with multiple AZs
+2. For non-production environment with a single AZ
+
+<p class="note">If you are working in a productive environment, we strongly
+recommend you to have each of your a9s Consul DNS dnsmasq servers deployed in a different availibility
+zone to ensure resilience against the failure of a single AZ.</p>
+
+#####<a id='multiple-asz'></a> Strategy for multiple Availibility Zones
+Assuming you have three (3) subnets located in three different AZs called *net-az1*, *net-az2* and *net-az3*.
+
+You can use the IPs from the a9s Consul DNS dnsmasqs deployed in subnets *net-
+az2* and *net-az3* as DNS in *net-az1*, IPs from the dnsmasqs deployed in subnets
+*net-az3* and *net-az1* as DNS in *net-az2* and IPs from the dnsmasqs deployed in
+subnets *net-az1* and *net-az2* as DNS in *net-az3*.
+
+
+| a9s Consul dnsmasq IP | Subnet | AZ |
+|-----------------------|--------|----|
+| `172.28.4.40` | net-az1 | AZ1 |
+| `172.28.5.40` | net-az2 | AZ2 |
+| `172.28.6.40` | net-az3 | AZ3 |
+
+can be used as
+
+| Subnet | CIDR | DNS |
+|--------|------|-----|
+| net-az1 | 172.28.4.0/24 | `172.28.5.40, 172.28.6.40` |
+| net-az2 | 172.28.5.0/24 | `172.28.4.40, 172.28.6.40` |
+| net-az3 | 172.28.6.0/24 | `172.28.4.40, 172.28.5.40` |
+
+As you can see, each subnet is configured to use all a9s Consul DNS dnsmasq servers except the one located in it.
+
+In the event of a failing AZ this is not a drawback as the nameserver of the AZ potentially fails along with the AZ.
+
+#####<a id='single-azs'></a>Strategy for a single Availibility Zone
+If you have access to only one availibility zone, we then recommand to create a
+dedicated subnet to host your a9s Consul DNS for PCF. The Consul subnet (*consul-net*) then is configurated to use the upstream DNS server (`109.234.108.234`), for example.
+
+| a9s Consul dnsmasq IP | Subnet | AZ |
+|-----------------------|--------|----|
+| `172.28.4.41` | consul-net | AZ1 |
+| `172.28.4.42` | consul-net | AZ1 |
+| `172.28.4.43` | consul-net | AZ1 |
+
+can be used as
+
+| Subnet | CIDR | DNS |
+|--------|------|-----|
+| net1 | 172.28.4.0/24 | `172.28.4.41, 172.28.4.42, 172.28.4.43` |
+| net2 | 172.28.5.0/24 | `172.28.4.41, 172.28.4.42, 172.28.4.43` |
+| net3 | 172.28.6.0/24 | `172.28.4.41, 172.28.4.42, 172.28.4.43` |
+| consul-net | 172.28.6.0/24 | `109.234.108.234` |
+

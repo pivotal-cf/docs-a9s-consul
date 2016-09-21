@@ -1,0 +1,45 @@
+---
+title: Installing and Configuring the a9s Consul DNS for PCF
+owner: Partners
+---
+
+This topic describes how to install and configure the a9s Consul DNS for PCF.
+
+##<a id='install'></a> Install the a9s Consul DNS for PCF
+
+1. Download the product file from the Pivotal Network.
+
+2. Navigate to the Ops Manager Installation Dashboard and click **Import a Product**
+to upload the product file.
+
+3. Click **Add** next to the uploaded a9s Consul DNS for PCF tile in the Ops Manager
+**Available Products** view to add it to your staging area.
+
+4. Click the newly added tile to review configurable Setting.
+
+5. Click **Apply Changes** to deploy the service.
+
+
+##<a id='configure'></a> Configure the a9s Consul DNS for PCF
+
+1. Select the a9s Consul DNS for PCF tile.
+
+2. Select the Upstream Nameservers panel.
+
+3. Fill the **General upstream nameservers** field with a list of **your default nameservers**. These will be used to resolve standard DNS queries except from domains listed below as well as internal DNS queries as issued by a9s Data Services using the internally reserved *.a9svs* tld.
+  <a href="../images/general-upstream-nameservers-config.png" target="_blank">
+    <img src="../images/general-upstream-nameservers-config.png" alt="screenshot of upstream nameservers configuration" />
+  </a>
+
+4. Click the **Add** button on the right side of the form to add a domain
+specific nameservers configuration.
+
+5. Each **Domain** field specifies an internal domain or toplevel domain of your choice. All DNS queries regarding this domain will be resolved by the nameserver you have specified in the corresponding **Domain** field. An **example** for this feature is the configuration of internal nameservers specific to a company or data center. In a VMware vSphere environment, this might be an internal nameserver resolving vSphere host names.
+  <a href="../images/domain-specific-nameservers-config.png" target="_blank">
+    <img src="../images/domain-specific-nameservers-config.png" alt="Screenshot of domain specific nameservers configuration" />
+  </a>
+
+6. If needed, repeat 4. and 5. for each domain you want to use.
+
+7. Click **Save**
+
