@@ -1,3 +1,5 @@
+Product name is a9s Consul DNS for PCF 
+
 ## Pivotal Cloud Foundry Partners Template
 
 This template helps partners prepare documentation for Pivotal Cloud Foundry (PCF) partner services that appear on [Pivotal Network](https://network.pivotal.io/). 
