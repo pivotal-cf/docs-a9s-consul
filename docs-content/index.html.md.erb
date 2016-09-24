@@ -3,41 +3,51 @@ title: a9s Consul DNS for PCF
 owner: Partners
 ---
 
-The a9s Consul DNS for PCF tile provides a highly available DNS service including a
-*Consul* cluster as well as additional *dnsmasq* servers meant to be used for
-service discovery and service failover procedures.
-
-*Consul* is a highly available service discovery and configuration tool including
-features such as failure detection, a HA key/value storage as well as an HA DNS service
-which be remotely controlled via HTTP based REST interface.
-
-This service is used and required by the *a9s Dedicated MongoDB* to advertise its service
-instances and service broker to the Cloud Foundry elastic runtime.
+This documentation describes installing, configuring, and using the a9s Consul DNS for PCF tile.
 
 <img src="../images/consul-icon-a9s@2x_1.png" alt="a9s Consul DNS for PCF logo" height="215" width="215" />
+
+## <id="overview"></a>Overview
+
+The a9s Consul DNS for PCF tile provides a highly available DNS service including a
+*Consul* cluster as well as additional *dnsmasq* servers for service discovery and service failover procedures.
+
+*Consul* is a highly available service discovery and configuration tool, which includes
+features such as failure detection, an HA key/value storage and an HA DNS service
+that can be remotely controlled via an HTTP-based REST interface.
+
+This service is used and required by the *a9s MongoDB for PCF* to advertise its service
+instances and service broker to the Pivotal Elastic Runtime.
 
 ## <a id="snapshot"></a>Product Snapshot
 
 <dl>
-<dt>anynines Consul-DNS Details:</dt>
+<dt>a9s Consul DNS for PCF Details:</dt>
 <dd><strong>Version</strong>: v0.9.0 </dd>
-<dd><strong>Release Date</strong>: September 1, 2016</dd>
-<dd><strong>Compatible Ops Manager Versions</strong>1.7.x</dd>
+<dd><strong>Release Date</strong>: September 26, 2016</dd>
+<dd><strong>Compatible Ops Manager Versions</strong>: v1.7.x</dd>
 <dd><strong>vSphere support?</strong> Yes</dd>
 <dd><strong>AWS support?</strong> Yes</dd>
 <dd><strong>OpenStack support?</strong> Yes</dd>
 </dl>
 
-## <a id="feedback"></a>Feedback
+## <a id="Support"></a>Support
 
-A commercial support with a service level agreement is available for the commercial license.
+Commercial support with a service-level agreement is available for the commercial license.
 
 The entire anynines team will help your team to get started and to be successful.
 
-In case your company has specific administration policies or configuration best practises. The anynines team will be happy to incorporate them if applicable.
+If your company has specific administration policies or configuration best practices, the anynines team is happy to incorporate them if applicable.
+
+## <a id="feedback"></a>Feedback
 
 Please provide any bugs, feature requests, or questions to svc.support@anynines.com.
 
+
 ## <a id='license'></a>License
 
-Please contact our sales team in order to learn more about commercial licenses and support at <a href="http://data-services.anynines.com/sales" target="_blank">data-services.anynines.com/sales</a>.
+For information about commerical licenses and support, please contact our sales team at <a href="http://data-services.anynines.com/sales" target="_blank">data-services.anynines.com/sales</a>.
+
+## <a id="see-also"></a>See Also
+
+For general information about Consul, see <a href="https://www.consul.io/" target="_blank">Consul by HashiCorp</a>.
