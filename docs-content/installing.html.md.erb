@@ -34,25 +34,28 @@ Complete the following steps to configure a9s Consul DNS for PCF.
 
 2. Click **Upstream Nameservers**.
 
-3. In the **General upstream nameservers** field, enter your default name servers. 
+3. In the **General upstream nameservers** field, enter your default name servers.
 The values specified in this field are used to resolve DNS queries except from:
     * Domain-specific name servers defined in the **Domain Specific Nameservers** field.
     * Domains containing the *.a9svs* pattern in the domain name. This pattern is reserved for services provided by anynines.
 
-    <a href="./images/general-upstream-nameservers-config.png" target="_blank">
-    <img src="./images/general-upstream-nameservers-config.png" alt="screenshot of upstream nameservers configuration" />
+    <a href="./images/general-upstream-name-servers-config.png" target="_blank">
+    <img src="./images/general-upstream-name-servers-config.png" alt="screenshot of upstream name servers configuration" />
     </a>
 
 4. Click **Add** to add a domain-specific name server.
 
   1. In the **Domain** field enter an internal domain or top level domain.
 
-  2. In the **Nameservers** field enter a corresponding nameserver
+  2. In the **Nameservers** field enter a corresponding name server
 
-    DNS queries matching the domain are resolved by the nameserver. For example, the internal nameserver configuration of a specific provider or data center. When using vSphere, this might be an internal nameserver that resolves vSphere host names.
+  DNS queries matching the domain are resolved by the name server. For example,
+  the internal name server configuration of a specific provider or data center.
+  When using vSphere, this might be an internal name server that resolves vSphere
+  host names.
 
-    <a href="./images/domain-specific-nameservers-config.png" target="_blank">
-    <img src="./images/domain-specific-nameservers-config.png" alt="Screenshot of domain specific nameservers configuration" />
+    <a href="./images/domain-specific-name-servers-config.png" target="_blank">
+    <img src="./images/domain-specific-name-servers-config.png" alt="Screenshot of domain specific name servers configuration" />
     </a>
 
 5. Repeat Step 4 for each additional domain you want to add.
@@ -131,7 +134,8 @@ can be used as
 
 Each subnet is configured to use all a9s Consul DNS dnsmasq servers except the one located in it.
 
-If an AZ fails, it is not a problem because the nameserver of the AZ fails along with the AZ.
+If an AZ fails, it is not a problem because the name server of the AZ fails
+along with the AZ.
 
 ####<a id='single-azs'></a>Strategy for a Single AZ
 
