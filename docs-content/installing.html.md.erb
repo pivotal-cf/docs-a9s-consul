@@ -6,9 +6,10 @@ owner: Partners
 This topic describes how to install and configure the a9s Consul DNS for PCF.
 
 <p class="note">
+<strong>Note</strong>:
 The installation of the a9s Consul DNS for PCF tile on a single AZ requires the
-creation of an extra subnet. This subnet will be used to host the consul VMs and
-needs to be present during the installation procedure.
+creation of an extra network with a subnet. This network will be used to host
+the consul VMs and needs to be present during the installation procedure.
 </p>
 
 ##<a id='install'></a> Install the a9s Consul DNS for PCF
@@ -63,7 +64,8 @@ The values specified in this field are used to resolve DNS queries except from:
 
 ###<a id='registering'></a> Register a9s Consul DNS in the Ops Manager Network Settings
 
-The following procedure describes how to register the a9s Consul DNS as the default DNS.
+Now that you have installed the a9s Consul DNS, you will want to register it as
+default DNS in your subnets. The following procedure describes how to do this.
 
 1. Open the PCF Ops Manager.
 
@@ -79,47 +81,50 @@ The following procedure describes how to register the a9s Consul DNS as the defa
 
 7. Click **Create Networks**.
 
-8. Under **Networks**, expand one of your previously configured subnets.
+8. Under **Networks**, expand your previously configured networks.
 
-9. Replace the entry for DNS with the IP addresses of your dnsmasq VMs that do not
-belong to the same subnet.
+9. In your **subnets**, replace the entry for DNS with the IP addresses of your
+dnsmasq VMs that do not belong to the same subnet.
 
-###<a id='dns-subnet'></a> About Setting DNS for a Subnet?
+###<a id='dns-subnet'></a> About Setting DNS for a Subnet
 
-In a highly available configuration, three infrastructure AZs have been configured. 
+In a highly available configuration, three infrastructure AZs have been configured.
 Each AZ is configured with a dedicated subnet.
 To make a9s Consul DNS for PCF highly available, three DNS nodes are distributed across the availability zones.
 
-You cannot use an a9s Consul DNS server as a name server within the specific subnet where its VM has been provisioned.
+You cannot use an a9s Consul DNS server as a name server within the specific
+subnet where its VM has been provisioned.
 Therefore, use one of the following strategies for your installation:
 
 * [Strategy for Multiple AZs](#multiple-asz)
 * [Strategy for a Single AZ](#single-azs)
 
 <p class="note"><strong>Note</strong>: If you are working in a production environment,
-make sure that each of your a9s Consul DNS dnsmasq servers is deployed in a different AZ to ensure resilience against the failure of a single AZ.</p>
+make sure that each of your a9s Consul DNS dnsmasq servers is deployed in a
+different AZ to ensure resilience against the failure of a single AZ.</p>
 
 ####<a id='multiple-asz'></a> Strategy for Multiple AZs
 
-For example, you have three subnets located in three different AZs called: net-az1, net-az2, and net-az3. 
-You use the IPs from the a9s Consul DNS dnsmasqs deployed in subnets net-az2 and net-az3 
-as DNS in net-az1, IPs from the dnsmasqs deployed in subnets
-net-az3 and net-az1 as DNS in net-az2 and IPs from the dnsmasqs deployed in
-subnets net-az1 and net-az2 as DNS in net-az3.
+For example, you have three networks with each one subnet located in the three
+different AZs called: net-az1, net-az2, and net-az3. You use the IPs from the
+a9s Consul DNS dnsmasqs deployed in networks net-az2 and net-az3 as DNS in
+net-az1, IPs from the dnsmasqs deployed in networks net-az3 and net-az1 as DNS
+in net-az2 and IPs from the dnsmasqs deployed in networks net-az1 and net-az2 as
+DNS in net-az3.
 
 The following tables illustrates this:
 
 
-| a9s Consul dnsmasq IP | Subnet | AZ |
-|-----------------------|--------|----|
+| a9s Consul dnsmasq IP | Network | Subnet AZ |
+|-----------------------|---------|-----------|
 | `172.28.4.40` | net-az1 | AZ1 |
 | `172.28.5.40` | net-az2 | AZ2 |
 | `172.28.6.40` | net-az3 | AZ3 |
 
 can be used as
 
-| Subnet | CIDR | DNS |
-|--------|------|-----|
+| Network | Subnet CIDR | DNS |
+|---------|-------------|-----|
 | net-az1 | 172.28.4.0/24 | `172.28.5.40, 172.28.6.40` |
 | net-az2 | 172.28.5.0/24 | `172.28.4.40, 172.28.6.40` |
 | net-az3 | 172.28.6.0/24 | `172.28.4.40, 172.28.5.40` |
@@ -130,22 +135,23 @@ If an AZ fails, it is not a problem because the nameserver of the AZ fails along
 
 ####<a id='single-azs'></a>Strategy for a Single AZ
 
-If you have access to only one AZ, you will make use of the dedicated subnet
+If you have access to only one AZ, you will make use of the dedicated network
 you created before the installation to host your a9s Consul DNS for PCF. Let's
-say that you called this subnet *consul-net*, you can now configure the Consul
-subnet, to use the upstream DNS server, `109.234.108.234`, for example:
+say that you called this network *consul-net*, you can now configure the Consul
+network to use the upstream DNS server, `109.234.108.234` for example:
 
-| a9s Consul dnsmasq IP | Subnet | AZ |
-|-----------------------|--------|----|
+| a9s Consul dnsmasq IP | Network | Subnet AZ |
+|-----------------------|---------|-----------|
 | `172.28.4.41` | consul-net | AZ1 |
 | `172.28.4.42` | consul-net | AZ1 |
 | `172.28.4.43` | consul-net | AZ1 |
 
 can be used as
 
-| Subnet | CIDR | DNS |
-|--------|------|-----|
+| Network | Subnet CIDR | DNS |
+|---------|-------------|-----|
 | net1 | 172.28.4.0/24 | `172.28.4.41, 172.28.4.42, 172.28.4.43` |
 | net2 | 172.28.5.0/24 | `172.28.4.41, 172.28.4.42, 172.28.4.43` |
 | net3 | 172.28.6.0/24 | `172.28.4.41, 172.28.4.42, 172.28.4.43` |
 | consul-net | 172.28.6.0/24 | `109.234.108.234` |
+
