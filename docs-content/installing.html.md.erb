@@ -88,6 +88,7 @@ default DNS in your subnets. The following procedure describes how to do this.
 
 9. In your **subnets**, replace the entry for DNS with the IP addresses of your
 dnsmasq VMs that do not belong to the same subnet.
+<p class="note"><strong>Note</strong>: You can not register the dnsmasq instance as nameserver in the same subnet as it was deployed to. The following section provides more information regarding this topic.</p>
 
 ###<a id='dns-subnet'></a> About Setting DNS for a Subnet
 
@@ -158,4 +159,3 @@ can be used as
 | net2 | 172.28.5.0/24 | `172.28.4.41, 172.28.4.42, 172.28.4.43` |
 | net3 | 172.28.6.0/24 | `172.28.4.41, 172.28.4.42, 172.28.4.43` |
 | consul-net | 172.28.6.0/24 | `109.234.108.234` |
-
