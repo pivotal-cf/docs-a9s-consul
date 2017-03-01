@@ -1,0 +1,14 @@
+---
+title: The Purpose of the a9s Consul DNS for PCF tile
+owner: Partners
+---
+
+<div class="note">
+Before installing a a9s service tile (e.g. a9s MongoDB for PCF), the <b>a9s BOSH for PCF</b> and <b>a9s Consul for PCF</b> tile must be installed up front.
+</div>
+
+The a9s Consul DNS tile provides an internal DNS system to the a9s service tile (e.g. a9s MongoDB for PCF and a9s PostgreSQL for PCF). This internal DNS system is used by the service tiles for the following reasons/purposes:
+
+* When binding an a9s service instance (e.g. a dedicated MongoDB ReplicaSet) to an application in Cloud Foundry, a <b>hostname</b> will be passed in the credentials (instead of IP addresses). This makes the <b>service bindings independent from the IP addresses</b>. Whenever an IP address of one node in the service cluster changes, the service binding must not be recreated.
+* The a9s Consul DNS for PCF tile allows to <b>realize an infrastructure independent failover</b> strategy. The a9s PostgreSQL for PCF tile for examples makes use of this. For each PostgreSQL cluster there is only one master node which acceptes write requests. The applications usually only accepts the hostname of the master node. Because its not garantueed that the node which is the master today is also the master tomorrow the a9s PostgreSQL for PCF creates dedicated hostname always resolving to the IP address of the current master. This dedicated hostname is then passed to the service bindings. When the master changes, the a9s PostgreSQL for PCF will update the IP address of the master hostname but the hostname itself dosn't change and so the service bindings doesn't have to be changed.
+* The a9s Consul DNS for PCF tile allows to <b>realize a infrastructure independent load balancing</b> (based on Consuls DNS round robin capabilities). At the moment there is no a9s service in the Pivotal Network which makes use of this but the service tile components use this feature to - for example - distribute the load across multiple instances of a service broker.

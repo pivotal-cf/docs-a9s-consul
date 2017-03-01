@@ -39,7 +39,7 @@ Complete the following steps to configure a9s Consul DNS for PCF.
     * Hosts containing the `.a9svs` pattern in the hostname, which is reserved for services provided by anynines
      <img src="./images/general-upstream-name-servers-config.png" alt="screenshot of upstream name servers configuration" />
 
-4. Perform the following procedure for each additional domain you want to add: 
+4. Perform the following procedure for each additional domain you want to add:
 
   1. Click **Add** to add a domain-specific name server.
       <img src="./images/domain-specific-name-servers-config.png" alt="Screenshot of domain specific name servers configuration" />
@@ -54,7 +54,7 @@ Complete the following steps to configure a9s Consul DNS for PCF.
 
 ##<a id='register'></a> Register a9s Consul DNS for PCF
 
-Complete the following steps to register the a9s Consul DNS for PCF as the default DNS in your subnets. 
+Complete the following steps to register the a9s Consul DNS for PCF as the default DNS in your subnets.
 
 1. Navigate to the Ops Manager Installation Dashboard.
 
@@ -73,13 +73,13 @@ Complete the following steps to register the a9s Consul DNS for PCF as the defau
 8. Under **Networks**, expand your previously configured networks.
 
 9. In your **Subnets**, replace the entry for DNS with the IP addresses of your
-dnsmasq VMs that do not belong to the same network. 
-You cannot register the dnsmasq instance as a name server in the same subnet as it was deployed to. 
+dnsmasq VMs that do not belong to the same network.
+You cannot register the dnsmasq instance as a name server in the same subnet as it was deployed to.
 For more information, see [Understand DNS Configuration for a Subnet](#dns-subnet).
 
 ###<a id='dns-subnet'></a> Understand DNS Configuration for a Subnet
 
-You can use a9s Consul DNS for PCF with multiple availability zones (AZs) or a single availability zone. 
+You can use a9s Consul DNS for PCF with multiple availability zones (AZs) or a single availability zone.
 Use one of the following strategies for your installation:
 
 * [Strategy for Multiple AZs](#multiple-asz)
@@ -96,8 +96,8 @@ In a highly available configuration, you must configure three infrastructure AZs
 Consult the following example for a possible multi-AZ configuration:
 
 * Three networks each with one subnet located in three different AZs (`net-az1`, `net-az2`, `net-az3`)
-* IPs from the a9s Consul DNS Dnsmasqs deployed in networks `net-az2` and `net-az3` as DNS in `net-az1` 
-* IPs from the a9s Consul DNS Dnsmasqs deployed in networks `net-az3` and `net-az1` as DNS in `net-az2` 
+* IPs from the a9s Consul DNS Dnsmasqs deployed in networks `net-az2` and `net-az3` as DNS in `net-az1`
+* IPs from the a9s Consul DNS Dnsmasqs deployed in networks `net-az3` and `net-az1` as DNS in `net-az2`
 * IPs from the the a9s Consul DNS Dnsmasqs deployed in networks `net-az1` and `net-az2` as DNS in `net-az3`
 
 The following table illustrates a multi-AZ deployment:
@@ -144,6 +144,5 @@ The above deployment can be configured with the following DNS:
 
 ##<a id='uninstall'></a> About Uninstalling a9s Consul DNS for PCF
 
-Before uninstalling a9s Consul DNS for PCF, remove the IP addresses of the dnsmasqs 
+Before uninstalling a9s Consul DNS for PCF, remove the IP addresses of the dnsmasqs
 VMs that you used as resolvers in the IaaS network settings.
-
