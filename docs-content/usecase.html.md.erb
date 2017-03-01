@@ -3,12 +3,18 @@ title: The Purpose of the a9s Consul DNS for PCF tile
 owner: Partners
 ---
 
-<div class="note">
-Before installing a a9s service tile (e.g. a9s MongoDB for PCF), the <b>a9s BOSH for PCF</b> and <b>a9s Consul for PCF</b> tile must be installed up front.
-</div>
+## <a id="why-not-proxy"></a> What is the purpose of the a9s Consul DNS for PCF tile?
 
 The a9s Consul DNS tile provides an internal DNS system to the a9s service tile (e.g. a9s MongoDB for PCF and a9s PostgreSQL for PCF). This internal DNS system is used by the service tiles for the following reasons/purposes:
 
 * When binding an a9s service instance (e.g. a dedicated MongoDB ReplicaSet) to an application in Cloud Foundry, a <b>hostname</b> will be passed in the credentials (instead of IP addresses). This makes the <b>service bindings independent from the IP addresses</b>. Whenever an IP address of one node in the service cluster changes, the service binding must not be recreated.
 * The a9s Consul DNS for PCF tile allows to <b>realize an infrastructure independent failover</b> strategy. The a9s PostgreSQL for PCF tile for examples makes use of this. For each PostgreSQL cluster there is only one master node which acceptes write requests. The applications usually only accepts the hostname of the master node. Because its not garantueed that the node which is the master today is also the master tomorrow the a9s PostgreSQL for PCF creates dedicated hostname always resolving to the IP address of the current master. This dedicated hostname is then passed to the service bindings. When the master changes, the a9s PostgreSQL for PCF will update the IP address of the master hostname but the hostname itself dosn't change and so the service bindings doesn't have to be changed.
 * The a9s Consul DNS for PCF tile allows to <b>realize a infrastructure independent load balancing</b> (based on Consuls DNS round robin capabilities). At the moment there is no a9s service in the Pivotal Network which makes use of this but the service tile components use this feature to - for example - distribute the load across multiple instances of a service broker.
+
+## <a id="why-not-proxy"></a>Why not use NGINX/HAProxy?
+
+While a Proxy could solve the issue of IP propagation, those instances will introduce another layer of complexity. For a service like PostgreSQL, drivers will expect only one node to contact, which makes the Proxy a single point of failure and strips most advantages in terms of HA, as the Proxy will be the Single Point of failure. Another Idea is to deploy multiple Proxies in a Hot-Standby way, which will add another layer of complexity, as an IaaS specific failover needs to be implemented (e.g. OpenStack does not allow transfer of Static IPs for instances on a non reachable Compute Node, except when using a Floating IP). Another concern with a Proxy approach is, that you will have one central Proxy which will route all traffic between apps and services, which is prone to become a bottleneck or security concern (as all database connections run through it).
+
+## <a id="why-not-ips"></a>Why not use static IP addresses?
+
+While it sounds tempting to use the IPs of the service instances, there is a major downside. Depending on the IaaS, it might not be possible to resurrect VMs with static IPs if the compute node containing it is currently down. The a9s-service framework is aiming to support all network types, this includes dynamic networks, where crashed VMs might be resurrected with a different IP.
