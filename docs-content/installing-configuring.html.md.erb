@@ -3,61 +3,17 @@ title: Installing the a9s Consul DNS for PCF
 owner: Partners
 ---
 
-##<a id='choose-integration'></a> Choose a Integration Pattern
+This section briefly explains the possible integration patterns of the a9s Consul DNS tile.
+
+# Choose a Integration Pattern
 
 Before you continue with the installtion procedure you must decide how to make the a9s Consul DNS available in the Pivotal Elastic Runtime (ERT). This means when an application - which is deployed to ERT - resolves an a9s Consul DNS managed hostname, this DNS query must be redirected to the nameserver of the a9s Consul DNS for PCF tile.
 
 <b>Example</b>: when you look at a service binding of an a9s PostgreSQL for PCF service instance (or any other a9s service) you will see a hostname like this `d5275ef-psql-master-alias.node.dc1.a9svs`. Whenever an application resolves an hostname ending with '.a9svs' the DNS request should be passed to the a9s Consul DNS tile.
 
-To archive this you can choose between the two integration pattern explaind below.
+To archive this you can choose between the following integration pattern:
 
-###<a id='pcf-ops-man-integration'></a> PCF Ops Manager Director Network Setting Integration
-
-<p class="note"><b>We not recommend to use this pattern for production setups</b>. Instead use the <a href="installing-configuring.html#dns-deligation-integration">DNS Deligation Integration pattern</a>.</p>
-
-When using this integration pattern all DNS queries of the whole PCF platform will be handeled by the a9s Consul DNS for PCF tile. Also the DNS queries to the public internet will be first redirected to the a9s Consul DNS for PCF tile and then dispached to your companies internal nameservers or to public nameserves.
-
-Within the a9s Consul DNS tile there are three consul server and three dnsmasq server handling DNS the requests. So when one server fails there are two remaining servers to handle the DNS queries.
-
-Before you start install the a9s Consul for PCF tile using this ingegration pattern ensure you have different subnets configured in the PCF Ops Manager Director for PCF tile. This is because it's not possible in the PCF Ops Manager Director to specify nameserver IP address for a subnet when the nameserver IP addresses are included in the subnet itself.
-
-###<a id='dns-deligation-integration'></a> via DNS Deligation Integration
-
-##<a id='install'></a> Install a9s Consul DNS for PCF
-
-Complete the following steps to download and install a9s BOSH for PCF.
-
-1. Download the product file from the [Pivotal Network](https://network.pivotal.io).
-
-2. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file.
-
-3. Click **Add** next to the uploaded a9s BOSH for PCF tile in the Ops Manager
-**Available Products** view to add it to your staging area.
-
-1. After the tile is installed, continue to the [Configure the a9s Consul DNS for PCF](#configure) section.
-
-##<a id='configure'></a> Configure a9s Consul DNS for PCF
-
-Complete the following steps to configure a9s Consul DNS for PCF.
-
-1. Click the a9s Consul DNS for PCF tile.
-
-2. Click **Upstream Nameservers**.
-
-3. In the **General upstream nameservers** field, enter your default name servers. These name servers resolve DNS queries except those from the following targets:
-    * Domain-specific name servers that will be defined in the **Domain Specific Nameservers** field
-    * Hosts containing the `.a9svs` pattern in the hostname, which is reserved for services provided by anynines
-     <img src="./images/general-upstream-name-servers-config.png" alt="screenshot of upstream name servers configuration" />
-
-4. Perform the following procedure for each additional domain you want to add:
-
-  1. Click **Add** to add a domain-specific name server.
-      <img src="./images/domain-specific-name-servers-config.png" alt="Screenshot of domain specific name servers configuration" />
-  1. In the **Domain** field enter an internal domain or top-level domain.
-  1. In the **Nameservers** field enter a corresponding name server. The name server resolves DNS queries matching the domain. For example, this could be the name server of your specific provider or data center. When using vSphere, this could be an internal name server that resolves vSphere host names.</pre>
-
-6. Click **Save**.
-
-7. Return to the Installation Dashboard and click **Apply changes** to deploy the service.
-
-8. After the service is deployed, continue to the [Register the a9s Consul DNS for PCF](#register) section.
+<ul>
+  <li><a href="/a9s-consul/deligation-integration.html">DNS Integration via Deligation</a></li>
+  <li><a href="/a9s-consul/opsman-integration.html">DNS Integration via PCF Ops Manager Director Network Configuration</a></li>
+</ul>

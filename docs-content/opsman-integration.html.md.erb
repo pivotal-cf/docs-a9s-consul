@@ -1,0 +1,67 @@
+---
+title: DNS Integration via PCF Ops Manager Director Network Configuration
+owner: Partners
+---
+
+<p class="note"><b>We not recommend to use this pattern for production setups</b>. Instead use the <a href="installing-configuring.html#dns-deligation-integration">DNS Deligation Integration pattern</a>.</p>
+
+When using this integration pattern all DNS queries of the whole PCF platform will be handeled by the a9s Consul DNS for PCF tile. Also the DNS queries to the public internet will be first redirected to the a9s Consul DNS for PCF tile and then dispached to your companies internal nameservers or to public nameserves.
+
+Within the a9s Consul DNS tile there are three consul server and three dnsmasq server handling DNS the requests. So when one server fails there are two remaining servers to handle the DNS queries.
+
+Installing and itegrating the a9s Consul DNS for PCF tile using this pattern the installation inlucdes the following steps:
+
+<ol>
+  <li>Review network configuration in the PCF Ops Director</li>
+  <li><b>Add</b>/<b>configure</b> the a9s Consul DNS tile for PCF and <b>applay changes</b></li>
+  <li>Find out the IP address of the dnsmasq servers within the a9s Consul DNS for PCF tile</li>
+  <li>Register the dnsmasq IP addresses in the appropriate subnets of the PCF Operations Director settings and <b>applay changes</b></li>
+</ol>
+
+##<a id='review-net'></a> Review network configuration in the PCF Ops Director
+
+Before you start installing the a9s Consul for PCF tile using this ingegration pattern, ensure you have different subnets configured in the PCF Ops Manager Director for PCF tile. **This is also possible when you only have one network available on the infrastructure layer** (see below).
+
+Having more then subnet in the PCF Ops Director is necessary because it is not possible in the PCF Ops Manager Director to specify nameserver IP addresses for a subnet when these IP addresses are included in the subnet itself. The screenshot below illustrates this problem.
+
+<img src="./images/pcf-opsman-dns-limitation.png" alt="Screenshot of the PCF Ops Director configuration" />
+
+
+##<a id='install'></a> Install a9s Consul DNS for PCF
+
+Complete the following steps to download and install a9s BOSH for PCF.
+
+1. Download the product file from the [Pivotal Network](https://network.pivotal.io).
+
+2. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file.
+
+3. Click **Add** next to the uploaded a9s BOSH for PCF tile in the Ops Manager
+**Available Products** view to add it to your staging area.
+
+1. After the tile is installed, continue to the [Configure the a9s Consul DNS for PCF](#configure) section.
+
+##<a id='configure'></a> Configure a9s Consul DNS for PCF
+
+Complete the following steps to configure a9s Consul DNS for PCF.
+
+1. Click the a9s Consul DNS for PCF tile.
+
+2. Click **Upstream Nameservers**.
+
+3. In the **General upstream nameservers** field, enter your default name servers. These name servers resolve DNS queries except those from the following targets:
+    * Domain-specific name servers that will be defined in the **Domain Specific Nameservers** field
+    * Hosts containing the `.a9svs` pattern in the hostname, which is reserved for services provided by anynines
+     <img src="./images/general-upstream-name-servers-config.png" alt="screenshot of upstream name servers configuration" />
+
+4. Perform the following procedure for each additional domain you want to add:
+
+  1. Click **Add** to add a domain-specific name server.
+      <img src="./images/domain-specific-name-servers-config.png" alt="Screenshot of domain specific name servers configuration" />
+  1. In the **Domain** field enter an internal domain or top-level domain.
+  1. In the **Nameservers** field enter a corresponding name server. The name server resolves DNS queries matching the domain. For example, this could be the name server of your specific provider or data center. When using vSphere, this could be an internal name server that resolves vSphere host names.</pre>
+
+6. Click **Save**.
+
+7. Return to the Installation Dashboard and click **Apply changes** to deploy the service.
+
+8. After the service is deployed, continue to the [Register the a9s Consul DNS for PCF](#register) section.
