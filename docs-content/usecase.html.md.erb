@@ -24,7 +24,7 @@ While it sounds tempting to use the IPs of the service instances, there is a maj
 
 Cloud Foundrys TCP router is a great component which came up after we developed and used the anynines Data Service Framework (DSF). This framework is the core of all a9s service tiles so we already had a solution in place. However, we had some internal discussions to use the TCP router within the anynines DSF. Because we see advantages and disadvantages in both solutions (using the Consul DNS vs. using the TCP router) we consider to provide both solutions in the future.
 
-A realization of this could provide two different types of hostnames in the service bindings. One filed that contains the consul hostnames and one that contains the TCP router routes. The applications could then pick the type of hostname(s) which is most appropriate.
+A realization of this could provide two different types of hostnames in the service bindings. One filed ("consul_hostname" or "consul_hostnames") that contains the  hostnames wihch are resolved via the Consul DNS and one field that contains the hostnames where the traffic is routed througt the TCP router ("tcp_route" or "tcp_routes"). The tile administrator could choose which hostname type is passed in the default "host" or "hosts" field of the service binding credentials. The applications could then pick the type of hostname(s) which is most appropriate.
 
 We did not investigated in a prototype yet but we want to share our first thoughts on that.
 
