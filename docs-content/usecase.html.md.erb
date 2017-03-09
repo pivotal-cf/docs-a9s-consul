@@ -18,11 +18,11 @@ Although a proxy could solve the issue of IP propagation, those instances would 
 
 Although it sounds tempting to use the IPs of the service instances in the service bindings, there is a major downside to that. Depending on the IaaS, it might not be possible to resurrect VMs with static IPs if the compute node containing it, is currently down. The anynines data service framework aims to support all network types. This includes dynamic networks in which crashed VMs get new IP address when they are restarted. In this case it would be necessary to recreate all service bindings.
 
-## <a id="why-not-ips"></a>Why we are not using Cloud Foundry's TCP router
+<!--## <a id="why-not-ips"></a>Why we are not using Cloud Foundry's TCP router
 
 Cloud Foundry's TCP router is a great component, which came up after we developed and used the anynines Data Service Framework (DSF). This framework is the core of all a9s service tiles, so we already had a solution in place. However, we had some internal discussions on whether to use the TCP router within the anynines DSF or not. As we see advantages and disadvantages in both solutions (using the Consul DNS vs. using the TCP router) we consider the provisioning of both solutions in the future.
 
-<!-- A realization of this could provide two different types of hostnames in the service bindings. One filed ("consul_hostname" or "consul_hostnames") that contains the  hostnames which are resolved via the Consul DNS and one field that contains the hostnames where the traffic is routed through the TCP router ("tcp_route" or "tcp_routes"). The tile administrator could choose which hostname type is passed in the default "host" or "hosts" field of the service binding credentials. The applications could then pick the type of hostname(s) which is most appropriate.
+ A realization of this could provide two different types of hostnames in the service bindings. One filed ("consul_hostname" or "consul_hostnames") that contains the  hostnames which are resolved via the Consul DNS and one field that contains the hostnames where the traffic is routed through the TCP router ("tcp_route" or "tcp_routes"). The tile administrator could choose which hostname type is passed in the default "host" or "hosts" field of the service binding credentials. The applications could then pick the type of hostname(s) which is most appropriate.
 
 We did not investigated in a prototype yet but we want to share our first thoughts on that.
 
