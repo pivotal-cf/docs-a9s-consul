@@ -26,7 +26,9 @@ Before you start installing the a9s Consul for PCF tile, ensure you have <b>one<
 
 <ul>
   <li>At least three subnets within the network where the elastic runtime is deployed to.</li>
-  <li>A dedicated network (not subnet) for the a9s Consul DNS for PCF tile. So you would have one network where the Pivotal Elastic Runtime is deployed to and one network where the a9s Consuld DNS tile is deployed to. When you have <b>only one network</b> in your IaaS layer <b>you still can create two networks in the PCF Ops Manager Director</b>. In this case you would use the same nework name and CIDR block for both networks. But then you have to tell the PCF Ops Manager Director which IP addresses should be used for the corresponding network. This is done using the “Reserved IP Ranges” field of the correspondig network. Detailed description how to configure this can be find below.
+  <li>A dedicated network (not subnet) for the a9s Consul DNS for PCF tile. So you would have one network where the Pivotal Elastic Runtime is deployed to and one network where the a9s Consuld DNS tile is deployed to. When you have <b>only one network</b> in your IaaS layer <b>you still can create two networks in the PCF Ops Manager Director</b>. In this case you would use the same nework name and CIDR block for both networks (this configuration is marked red in the screenshot below). But then you have to tell the PCF Ops Manager Director which IP addresses should be used for the corresponding network. This is done using the "Reserved IP Ranges" field (marked blue in the screenshot below) of the correspondig network. Detailed description how to configure this can be find below.
+  <img src="./images/consul-opsmanintegration-network.png" alt="Consul PCF Ops Man integration with only one network" />
+
   </li>
 </ul>
 
@@ -44,7 +46,7 @@ Complete the following steps to download and install a9s BOSH for PCF.
 
 4. Click the a9s Consul DNS for PCF tile.
 
-5. Click on **Assign AZs and Networks** and assign a network and AZs that should be used for this tile. If you created a dedicated network for the a9s Consul DNS tile (like described in **1. Review network configuration in the PCF Ops Director**) please select this network here.
+5. Click on **Assign AZs and Networks** and assign a network and AZs that should be used for this tile. If you created a dedicated network for the a9s Consul DNS tile (like described in **1. Review network configuration in the PCF Ops Director**) please select this network here. In the screenshot in the "Review network configuration in the PCF Ops Director" this network is named "consul-net"
 
 6. Click **Upstream Nameservers**.
 
