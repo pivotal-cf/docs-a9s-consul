@@ -79,6 +79,11 @@ Remember the three IP addresses of the dnsmasq servers.
 
 ##<a id='configure-consul-ips'></a> 4. Register the dnsmasq IP addresses in the appropriate subnets of the PCF Operations Director
 
-After this step each DNS query made by applications running in the Pivotal Elastic Runtime as well the
+**After this step each DNS lookup made by applications running in the Pivotal Elastic Runtime will be routed to the a9s Consul DNS for PCF tile.**
 
-Go to the **PCF Ops Manager Director** tile and there click on **Create Networks**.
+The settings in this step differ regarding to the networks configured in the PCF Ops Manager Director (see section "<a href="#review-net">Review network configuration in the PCF Ops Director</a>").
+
+<ul>
+  <li>If you have created a dedicated network for the a9s Consul DNS tile go to the "Create Network" section of the PCF Ops Director and replace the DNS IP addresses in the Network where the Pivotal Elastic Runtime is running. Configure at least two out of the three IP addresses you noted in step 3 in this field. <b>Note:</b> Don't change the DNS settings of the network you have created for the a9s Consul for PCF tile.</li>
+  <li>If you have three subnets in you PCF Ops Director configured, go to the PCF Ops Director "Create Network" section and configure two of the three IP addresses (you have noted in step 3) in the DNS field of each subnet. <b>Attention:</b> For each subnet ensure that you not configure the IP address that belongs to the subnet itself, instead configure the two IP addresses that belongs to the other subnets.</li>
+</ul>
