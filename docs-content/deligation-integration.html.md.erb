@@ -26,23 +26,25 @@ Complete the following steps to download and install a9s BOSH for PCF.
 
 5. Click on **Assign AZs and Networks** and assign a network and AZs that should be used for this tile.
 
-6. Click **Upstream Nameservers**.
+6. If you have multiple PCF environments and you want to install the a9s Consul DNS for PCF tile  on each environment, click on **Consul Settings** and ensure that you configure different domains for each PCF environment. This is necessary to be able to distinguish the dnslookups. Otherwise your companys DNS server would be confused to which Consul DNS a DNS lookup should be delegated. 
 
-7. In the **General upstream nameservers** field, enter your default name servers. These name servers resolve DNS queries except those from the following targets:
+7. Click **Upstream Nameservers**.
+
+8. In the **General upstream nameservers** field, enter your default name servers. These name servers resolve DNS queries except those from the following targets:
     * Domain-specific name servers that will be defined in the **Domain Specific Nameservers** field
     * Hosts containing the `.a9svs` pattern in the hostname, which is reserved for services provided by anynines
      <img src="./images/general-upstream-name-servers-config.png" alt="screenshot of upstream name servers configuration" />
 
-8. Perform the following procedure for each additional domain you want to add:
+9. Perform the following procedure for each additional domain you want to add:
 
   1. Click **Add** to add a domain-specific name server.
       <img src="./images/domain-specific-name-servers-config.png" alt="Screenshot of domain specific name servers configuration" />
   2. In the **Domain** field enter an internal domain or top-level domain.
   3. In the **Nameservers** field enter a corresponding name server. The name server resolves DNS queries matching the domain. For example, this could be the name server of your specific provider or data center. When using vSphere, this could be an internal name server that resolves vSphere host names.</pre>
 
-9. Click **Save**.
+10. Click **Save**.
 
-10. Return to the Installation Dashboard and click **Apply changes** to deploy the service.
+11. Return to the Installation Dashboard and click **Apply changes** to deploy the service.
 
 ##<a id='discover-consul-ips'></a> 2. Find out the IP addresses of the dnsmasq servers within the a9s Consul DNS for PCF tile
 
