@@ -1,0 +1,34 @@
+---
+title: The Purpose of the a9s Consul DNS for PCF tile
+owner: Partners
+---
+
+The a9s Consul DNS tile provides an internal DNS system to the a9s service tiles (e.g. a9s MongoDB for PCF and a9s PostgreSQL for PCF). This internal DNS system is used by the service tiles for the following purposes:
+
+* When binding an a9s service instance (e.g. a MongoDB ReplicaSet) to an application in Cloud Foundry, a <b>hostname</b> will be passed with the credentials (instead of IP addresses). This makes the <b>service bindings independent from the IP addresses</b>. Even if an IP address of one node in the service cluster changes, the service binding does not need be recreated.
+* The a9s Consul DNS for PCF tile allows to <b>realize an infrastructure independent failover</b> mechanism. The a9s PostgreSQL for PCF tile is one of the tiles which make use of this. When the a9s PostgreSQL for PCF tile provisions a PostgreSQL cluster, there is only one master node accepting write requests. Applications connecting to a PostgreSQL cluster usually only accept the hostname of the master node. As it is not guaranteed that the node which is the master today, is also the master tomorrow, the a9s PostgreSQL for PCF tile creates a hostname always resolving to the IP address of the current master. This hostname is then passed to the service bindings. When the master changes, the a9s PostgreSQL for PCF tile will update the IP address of the hostname but the hostname itself does not change. Therefore the service bindings do not have to be changed either.
+* The a9s Consul DNS for PCF tile allows to <b>realize a infrastructure independent load balancing</b> (based on Consuls DNS round robin capabilities). At the moment there is no a9s service in the Pivotal Network which makes use of this.
+* The a9s Consul DNS acts as a service registry for internal components within the a9s tiles. <a href="https://www.consul.io/docs/agent/watches.html" target="_blank">Consul watches</a> are used to realize a choreography pattern within the microservice architecture of the anynines dataservice framework (DSF).
+
+## <a id="why-not-proxy"></a>Why we decided not to use NGINX/HAProxy
+
+Although a proxy could solve the issue of IP propagation, those instances would introduce another layer of complexity. For a service, like PostgreSQL, drivers expect only one node to contact, which makes the proxy a single point of failure and strips most advantages in terms of HA. Another idea is to deploy multiple proxies within a hot-standby setup, which would add even more complexity, as an IaaS specific failover needs to be implemented.
+
+## <a id="why-not-ips"></a>Why we decided not to use static IP addresses
+
+Although it sounds tempting to use the IPs of the service instances in the service bindings, there is a major downside to that. Depending on the IaaS, it might not be possible to resurrect VMs with static IPs if the compute node containing it, is currently down. The anynines data service framework aims to support all network types. This includes dynamic networks in which crashed VMs get new IP address when they are restarted. In this case it would be necessary to recreate all service bindings.
+
+<!--## <a id="why-not-ips"></a>Why we are not using Cloud Foundry's TCP router
+
+Cloud Foundry's TCP router is a great component, which came up after we developed and used the anynines Data Service Framework (DSF). This framework is the core of all a9s service tiles, so we already had a solution in place. However, we had some internal discussions on whether to use the TCP router within the anynines DSF or not. As we see advantages and disadvantages in both solutions (using the Consul DNS vs. using the TCP router) we consider the provisioning of both solutions in the future.
+
+ A realization of this could provide two different types of hostnames in the service bindings. One filed ("consul_hostname" or "consul_hostnames") that contains the  hostnames which are resolved via the Consul DNS and one field that contains the hostnames where the traffic is routed through the TCP router ("tcp_route" or "tcp_routes"). The tile administrator could choose which hostname type is passed in the default "host" or "hosts" field of the service binding credentials. The applications could then pick the type of hostname(s) which is most appropriate.
+
+We did not investigated in a prototype yet but we want to share our first thoughts on that.
+
+* Using the TCP Router for an <b>infrastructure independent load balancing</b> would also be possible.
+* Using the TCP Router for an <b>infrastructure independent failover</b> would also be possible.
+* Using the same TCP Router instances the PCF Elastic Runtime uses for the applications would make the service instance endpoints available on the internet. It's required to deploy dedicated TCP router instances on a private network.
+* It introduces an additional hop in the network since the traffic is first routed to the TPC router and from there to the service instance. Using the Consul DNS solution the traffic is directly routed to the service instance without any other  component in between.
+* A high available TCP Router setup requires a high available load balancer as an additional component. If you don't want all service instances to become available on the internet you need a high available load balancer that is not available on the internet.
+* Because we want to provide dedicated service instances the TCP router would be a shared component through which the traffic of all service instances is going through. Using a dedicated TCP routers for each service instance would also be possible. This means there could be a service plan that provisions dedicated service instances but use a shared TCP router. Another plan could provisions a dedicated a TCP router for each service instance. For the last option it is required to dynamically setup a load balancer. -->
