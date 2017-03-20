@@ -3,20 +3,24 @@ title: The Purpose of the a9s Consul DNS for PCF tile
 owner: Partners
 ---
 
-The a9s Consul DNS tile provides an internal DNS system to the a9s service tiles (e.g. a9s MongoDB for PCF and a9s PostgreSQL for PCF). This internal DNS system is used by the service tiles for the following purposes:
+This topic describes why you might want to install a9s Consul DNS for Pivotal Cloud Foundry (PCF). 
 
-* When binding an a9s service instance (e.g. a MongoDB ReplicaSet) to an application in Cloud Foundry, a <b>hostname</b> will be passed with the credentials (instead of IP addresses). This makes the <b>service bindings independent from the IP addresses</b>. Even if an IP address of one node in the service cluster changes, the service binding does not need be recreated.
-* The a9s Consul DNS for PCF tile allows to <b>realize an infrastructure independent failover</b> mechanism. The a9s PostgreSQL for PCF tile is one of the tiles which make use of this. When the a9s PostgreSQL for PCF tile provisions a PostgreSQL cluster, there is only one master node accepting write requests. Applications connecting to a PostgreSQL cluster usually only accept the hostname of the master node. As it is not guaranteed that the node which is the master today, is also the master tomorrow, the a9s PostgreSQL for PCF tile creates a hostname always resolving to the IP address of the current master. This hostname is then passed to the service bindings. When the master changes, the a9s PostgreSQL for PCF tile will update the IP address of the hostname but the hostname itself does not change. Therefore the service bindings do not have to be changed either.
-* The a9s Consul DNS for PCF tile allows to <b>realize a infrastructure independent load balancing</b> (based on Consuls DNS round robin capabilities). At the moment there is no a9s service in the Pivotal Network which makes use of this.
-* The a9s Consul DNS acts as a service registry for internal components within the a9s tiles. <a href="https://www.consul.io/docs/agent/watches.html" target="_blank">Consul watches</a> are used to realize a choreography pattern within the microservice architecture of the anynines dataservice framework (DSF).
+## <a id="key"></a> Key Features
 
-## <a id="why-not-proxy"></a>Why we decided not to use NGINX/HAProxy
+The a9s Consul DNS for PCF tile provides an internal DNS system to the other a9s service tiles for PCF, such as a9s MongoDB and a9s PostgreSQL. The service tiles use this internal DNS system to do the following: 
 
-Although a proxy could solve the issue of IP propagation, those instances would introduce another layer of complexity. For a service, like PostgreSQL, drivers expect only one node to contact, which makes the proxy a single point of failure and strips most advantages in terms of HA. Another idea is to deploy multiple proxies within a hot-standby setup, which would add even more complexity, as an IaaS specific failover needs to be implemented.
+* <b>Make service bindings independent from IP addresses</b>: When developers bind an a9s service instance to their Cloud Foundry app, they can provide a hostname instead of an IP address. Developers then do not need to recreate the service binding if the IP address of a node in the service cluster changes.
+* <b>Provide an infrastructure-independent failover mechanism</b>: Consider apps that use a9s PostgreSQL for PCF. They connect to a9s PostgreSQL clusters using the hostname of a single master node that accepts write requests. The node that is currently the master node changes often. With a9s Consul DNS, the cluster can use a hostname that always resolves to the IP of the current master mode. This means the service binding requires no change when the master node changes.
+* **Act as a service registry**: The other a9s tiles use a9s Consul DNS as a service registry for their internal components. The anynines dataservice framework (DSF) also uses <a href="https://www.consul.io/docs/agent/watches.html" target="_blank">Consul watches</a> to realize a choreography pattern within the microservice architecture.
+* <b>Provide infrastructure-independent load balancing</b> using Consul DNS round robin capabilities. Currently, none of a9s services for PCF use this feature. 
 
-## <a id="why-not-ips"></a>Why we decided not to use static IP addresses
+## <a id="why-not-proxy"></a>Why a9s Services Do Not Use NGINX/HAProxy
 
-Although it sounds tempting to use the IPs of the service instances in the service bindings, there is a major downside to that. Depending on the IaaS, it might not be possible to resurrect VMs with static IPs if the compute node containing it, is currently down. The anynines data service framework aims to support all network types. This includes dynamic networks in which crashed VMs get new IP address when they are restarted. In this case it would be necessary to recreate all service bindings.
+Although proxies can solve the issue of IP propagation, they also introduce a layer of complexity. For a service such as PostgreSQL, drivers expect only one node to contact, which makes a proxy a single point of failure and removes most of the advantages of high availability. Another idea is to deploy multiple proxies within a hot-standby setup, which adds even more complexity, as an IaaS specific failover needs to be implemented.
+
+## <a id="why-not-ips"></a>Why a9s Services Do Not Use Static IPs
+
+Although it sounds tempting to use the IPs of service instances in service bindings, there is a major downside to that. Depending on the IaaS, it might not be possible to resurrect VMs with static IPs if the compute node containing it is currently down. The anynines DSF aims to support all network types. This includes dynamic networks in which crashed VMs get new IP address when they are restarted. In this case it would be necessary to recreate all service bindings.
 
 <!--## <a id="why-not-ips"></a>Why we are not using Cloud Foundry's TCP router
 

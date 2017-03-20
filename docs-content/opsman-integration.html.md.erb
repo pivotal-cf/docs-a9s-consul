@@ -3,87 +3,87 @@ title: DNS Integration via PCF Ops Manager Director Network Configuration
 owner: Partners
 ---
 
-<p class="note"><b>We do not recommend to use this pattern for production setups</b>. Use the <a href="installing-configuring.html#dns-deligation-integration">DNS Delegation Integration pattern</a> instead.</p>
+<p class="note"><strong>Note</strong>: <b>anynines does not recommend using this pattern for production setups</b>. Use the <a href="installing-configuring.html#dns-deligation-integration">DNS Delegation Integration pattern</a> instead.</p>
 
-When using this integration pattern all DNS queries of the whole PCF platform will be handled by the a9s Consul DNS for PCF tile. The DNS queries to the public internet will be first redirected to the a9s Consul DNS for PCF tile and then dispatched to your companies internal nameservers or to public nameservers.
+When using this integration pattern, all DNS queries of the whole PCF platform will be handled by the a9s Consul DNS for PCF tile. The DNS queries to the public Internet will be first redirected to the a9s Consul DNS for PCF tile and then dispatched to your company's internal nameservers or to public nameservers.
 
-Within the a9s Consul DNS tile there are three consul servers and three dnsmasq server handling the DNS requests. So that if one server fails there are two remaining servers to handle the DNS queries.
+Within the a9s Consul DNS tile there are three consul servers and three dnsmasq servers handling the DNS requests. If one server fails, there are two remaining servers to handle the DNS queries.
 
-Installing and integrating the a9s Consul DNS for PCF tile using this pattern the installation includes the following steps:
+Installing and integrating the a9s Consul DNS for PCF tile using this pattern includes the following steps:
 
 <ol>
-  <li>Review network configuration in the PCF Ops Director</li>
-  <li><b>Add</b>/<b>configure</b> the a9s Consul DNS tile for PCF and <b>apply changes</b></li>
-  <li>Find out the IP addresses of the dnsmasq servers within the a9s Consul DNS for PCF tile</li>
-  <li>Register the dnsmasq IP addresses in the appropriate subnets of the PCF Operations Director settings</b></li>
+  <li>Review network configuration in the PCF Ops Manager Director.</li>
+  <li><b>Add</b>/<b>configure</b> the a9s Consul DNS tile for PCF and <b>apply changes</b>.</li>
+  <li>Find out the IP addresses of the dnsmasq servers within the a9s Consul DNS for PCF tile.</li>
+  <li>Register the dnsmasq IP addresses in the appropriate subnets of the PCF Ops Manager Director settings</b>.</li>
 </ol>
 
-##<a id='review-net'></a> 1. Review network configuration in the PCF Ops Director
+##<a id='review-net'></a> 1. Review Network Configuration in the PCF Ops Manager Director
 
-**The goal of this section is to ensure that the name servers included in the a9s Consul DNS for PCF tile can be configured in the DNS fields of the network settings in the PCF Ops Manager Director tile.**
+**The goal of this section is to ensure that the nameservers included in the a9s Consul DNS for PCF tile can be configured in the DNS fields of the network settings in the PCF Ops Manager Director tile.**
 
-Before you start installing the a9s Consul for PCF tile, ensure you have <b>one</b> of the following network configuration in place:
+Before you start installing the a9s Consul for PCF tile, ensure you have <b>one</b> of the following network configurations in place:
 
 <ul>
-  <li>At least three subnets within the network where the elastic runtime is deployed to.</li>
-  <li>A dedicated network (not subnet) for the a9s Consul DNS for PCF tile. So you would have one network where the Pivotal Elastic Runtime is deployed to and one network where the a9s Consul DNS tile is deployed to. When you have <b>only one network</b> in your IaaS layer <b>you can still create two networks in the PCF Ops Manager Director</b>. In this case you would use the same network name and CIDR block for both networks (this configuration is marked red in the screenshot below). But then you have to tell the PCF Ops Manager Director which IP addresses should be used for the corresponding network. This is done using the "Reserved IP Ranges" field (marked blue in the screenshot below) of the corresponding network. Detailed description how to configure this can be find below.
+  <li>At least three subnets within the network where the Elastic Runtime is deployed.</li>
+  <li>A dedicated network (not subnet) for the a9s Consul DNS for PCF tile. In this case, you would have one network where the Pivotal Elastic Runtime is deployed and one network where the a9s Consul DNS tile is deployed. When you have <b>only one network</b> in your IaaS layer, <b>you can still create two networks in the PCF Ops Manager Director</b>. In this case you would use the same network name and CIDR block for both networks. This configuration is marked red in the screenshot below. It requires that you tell the PCF Ops Manager Director which IP addresses should be used for the corresponding network. This is done using the <b>Reserved IP Ranges</b> field, marked blue in the screenshot below, of the corresponding network. A detailed description of how to configure this can be found below.
   <img src="./images/consul-opsmanintegration-network.png" alt="Consul PCF Ops Man integration with only one network" />
 
   </li>
 </ul>
 
 
-##<a id='install'></a> 2. Add/configure the a9s Consul DNS tile for PCF
+##<a id='install'></a> 2. Add/Configure the a9s Consul DNS Tile for PCF
 
-Complete the following steps to download and install a9s BOSH for PCF.
+Complete the following steps to download and install a9s Consule DNS for PCF.
 
 1. Download the product file from the [Pivotal Network](https://network.pivotal.io).
 
 2. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file.
 
-3. Click **Add** next to the uploaded a9s BOSH for PCF tile in the Ops Manager
+3. Click **Add** next to the uploaded a9s Consul DNS for PCF tile in the Ops Manager
 **Available Products** view to add it to your staging area.
 
 4. Click the a9s Consul DNS for PCF tile.
 
-5. Click on **Assign AZs and Networks** and assign a network and AZs that should be used for this tile. If you created a dedicated network for the a9s Consul DNS tile (as described in **1. Review network configuration in the PCF Ops Director**) please select this network here. In the screenshot in the "Review network configuration in the PCF Ops Director" this network is named "consul-net"
+5. Click on **Assign AZs and Networks** and assign the networks and AZs that should be used for this tile. If you created a dedicated network for the a9s Consul DNS tile as described in **1. Review network configuration in the PCF Ops Director**,  please select this network here. In the screenshot in the **Review network configuration in the PCF Ops Director** section, this network is named `consul-net`.
 
 6. Click **Upstream Nameservers**.
 
-7. In the **General upstream nameservers** field, enter your default name servers. These name servers resolve DNS queries except those from the following targets:
-    * Domain-specific name servers that will be defined in the **Domain Specific Nameservers** field
+7. In the **General upstream nameservers** field, enter your default nameservers. These nameservers resolve DNS queries except those from the following targets:
+    * Domain-specific nameservers that will be defined in the **Domain Specific Nameservers** field
     * Hosts containing the `.a9svs` pattern in the hostname, which is reserved for services provided by anynines
-     <img src="./images/general-upstream-name-servers-config.png" alt="screenshot of upstream name servers configuration" />
+     <img src="./images/general-upstream-name-servers-config.png" alt="screenshot of upstream nameservers configuration" />
 
 8. Perform the following procedure for each additional domain you want to add:
 
   1. Click **Add** to add a domain-specific name server.
-      <img src="./images/domain-specific-name-servers-config.png" alt="Screenshot of domain specific name servers configuration" />
-  2. In the **Domain** field enter an internal domain or top-level domain.
-  3. In the **Nameservers** field enter a corresponding name server. The name server resolves DNS queries matching the domain. For example, this could be the name server of your specific provider or data center. When using vSphere, this could be an internal name server that resolves vSphere host names.</pre>
+      <img src="./images/domain-specific-name-servers-config.png" alt="Screenshot of domain specific nameservers configuration" />
+  2. In the **Domain** field, enter an internal domain or top-level domain.
+  3. In the **Nameservers** field, enter a corresponding name server. The name server resolves DNS queries matching the domain. For example, this could be the name server of your specific provider or data center. When using vSphere, this could be an internal name server that resolves vSphere host names.</pre>
 
 9. Click **Save**.
 
 10. Return to the Installation Dashboard and click **Apply changes** to deploy the service.
 
-##<a id='discover-consul-ips'></a> 3. Find out the IP addresses of the dnsmasq servers within the a9s Consul DNS for PCF tile
+##<a id='discover-consul-ips'></a> 3. Find out the IP Addresses of the dnsmasq Servers within the a9s Consul DNS for PCF Tile
 
 Once the tile is successfully installed, it is required to find out the IP addresses of the nameserver within the a9s Consul DNS for PCF tile.
 
-For this reason click on the **a9s Consul DNS** tile and then to **Status**. It takes a few seconds until the required information are displayed.
+For this reason, click on the **a9s Consul DNS** tile and then **Status**. It takes a few seconds until the required information are displayed.
 
-Remember the three IP addresses of the dnsmasq servers.
+Record the three IP addresses of the dnsmasq servers.
 
 <img src="./images/pcf-a9s-consul-dns-status-page.png" alt="screenshot of a9s Consul DNS for PCF tile" />
 
 
-##<a id='configure-consul-ips'></a> 4. Register the dnsmasq IP addresses in the appropriate subnets of the PCF Operations Director
+##<a id='configure-consul-ips'></a> 4. Register the dnsmasq IP Addresses in the Appropriate Subnets of the PCF Ops Manager Director
 
 **After this step each DNS lookup made by applications running in the Pivotal Elastic Runtime will be routed to the a9s Consul DNS for PCF tile.**
 
-The settings in this step differ regarding to the networks configured in the PCF Ops Manager Director (see section "<a href="#review-net">Review network configuration in the PCF Ops Director</a>").
+The settings in this step differ regarding to the networks configured in the PCF Ops Manager Director. See "<a href="#review-net">Review network configuration in the PCF Ops Director</a>".
 
 <ul>
-  <li>If you have created a dedicated network for the a9s Consul DNS tile go to the "Create Network" section of the PCF Ops Director and replace the DNS IP addresses in the Network where the Pivotal Elastic Runtime is running. Configure at least two out of the three IP addresses you noted in step 3 in this field. <b>Note:</b> Don't change the DNS settings of the network you have created for the a9s Consul for PCF tile.</li>
-  <li>If you have three subnets in you PCF Ops Director configured, go to the PCF Ops Director "Create Network" section and configure two of the three IP addresses (you noted in step 3) in the DNS field of each subnet. <b>Attention:</b> For each subnet, ensure that you did not configure the IP address that belongs to the subnet itself and configure the two IP addresses that belongs to the other subnets instead.</li>
+  <li>If you have created a dedicated network for the a9s Consul DNS tile, go to the <b>Create Network</b> section of the PCF Ops Manager Director and replace the DNS IP addresses in the Network where the Pivotal Elastic Runtime is running. Configure at least two out of the three IP addresses you noted in step 3 in this field. <b>Note:</b> Don't change the DNS settings of the network you have created for the a9s Consul DNS for PCF tile.</li>
+  <li>If you have three subnets in you PCF Ops Manager Director configured, go to the PCF Ops Manager Director <b>Create Network</b> section and configure two of the three IP addresses (from step 3) in the DNS field of each subnet. <b>Attention:</b> For each subnet, ensure that you did not configure the IP address that belongs to the subnet itself and configure the two IP addresses that belong to the other subnets instead.</li>
 </ul>
