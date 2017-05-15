@@ -3,7 +3,7 @@ title: DNS Integration via PCF Ops Manager Director Network Configuration
 owner: Partners
 ---
 
-<p class="note"><strong>Note</strong>: <b>anynines does not recommend using this pattern for production setups</b>. Use the <a href="installing-configuring.html#dns-deligation-integration">DNS Delegation Integration pattern</a> instead.</p>
+<p class="note"><strong>Note</strong>: <b>anynines does not recommend using this pattern for production setups</b>. Use the <a href="installing-configuring.html#dns-delegation-integration">DNS Delegation Integration pattern</a> instead.</p>
 
 When using this integration pattern, all DNS queries of the whole PCF platform will be handled by the a9s Consul DNS for PCF tile. The DNS queries to the public Internet will be first redirected to the a9s Consul DNS for PCF tile and then dispatched to your company's internal nameservers or to public nameservers.
 
