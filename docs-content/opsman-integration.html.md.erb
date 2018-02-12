@@ -1,5 +1,5 @@
 ---
-title: DNS Integration via PCF Ops Manager Director Network Configuration
+title: DNS Integration via BOSH Director Network Configuration
 owner: Partners
 ---
 
@@ -12,21 +12,21 @@ Within the a9s Consul DNS tile there are three consul servers and three dnsmasq 
 Installing and integrating the a9s Consul DNS for PCF tile using this pattern includes the following steps:
 
 <ol>
-  <li>Review network configuration in the PCF Ops Manager Director.</li>
+  <li>Review network configuration in the BOSH Director.</li>
   <li><b>Add</b>/<b>configure</b> the a9s Consul DNS tile for PCF and <b>apply changes</b>.</li>
   <li>Find out the IP addresses of the dnsmasq servers within the a9s Consul DNS for PCF tile.</li>
-  <li>Register the dnsmasq IP addresses in the appropriate subnets of the PCF Ops Manager Director settings</b>.</li>
+  <li>Register the dnsmasq IP addresses in the appropriate subnets of the BOSH Director settings</b>.</li>
 </ol>
 
-##<a id='review-net'></a> 1. Review Network Configuration in the PCF Ops Manager Director
+##<a id='review-net'></a> 1. Review Network Configuration in the BOSH Director
 
-**The goal of this section is to ensure that the nameservers included in the a9s Consul DNS for PCF tile can be configured in the DNS fields of the network settings in the PCF Ops Manager Director tile.**
+**The goal of this section is to ensure that the nameservers included in the a9s Consul DNS for PCF tile can be configured in the DNS fields of the network settings in the BOSH Director tile.**
 
 Before you start installing the a9s Consul for PCF tile, ensure you have <b>one</b> of the following network configurations in place:
 
 <ul>
   <li>At least three subnets within the network where the Elastic Runtime is deployed.</li>
-  <li>A dedicated network (not subnet) for the a9s Consul DNS for PCF tile. In this case, you would have one network where the Pivotal Elastic Runtime is deployed and one network where the a9s Consul DNS tile is deployed. When you have <b>only one network</b> in your IaaS layer, <b>you can still create two networks in the PCF Ops Manager Director</b>. In this case you would use the same network name and CIDR block for both networks. This configuration is marked red in the screenshot below. It requires that you tell the PCF Ops Manager Director which IP addresses should be used for the corresponding network. This is done using the <b>Reserved IP Ranges</b> field, marked blue in the screenshot below, of the corresponding network. A detailed description of how to configure this can be found below.
+  <li>A dedicated network (not subnet) for the a9s Consul DNS for PCF tile. In this case, you would have one network where the Pivotal Elastic Runtime is deployed and one network where the a9s Consul DNS tile is deployed. When you have <b>only one network</b> in your IaaS layer, <b>you can still create two networks in the BOSH Director</b>. In this case you would use the same network name and CIDR block for both networks. This configuration is marked red in the screenshot below. It requires that you tell the BOSH Director which IP addresses should be used for the corresponding network. This is done using the <b>Reserved IP Ranges</b> field, marked blue in the screenshot below, of the corresponding network. A detailed description of how to configure this can be found below.
   <img src="./images/consul-opsmanintegration-network.png" alt="Consul PCF Ops Man integration with only one network" />
 
   </li>
@@ -77,13 +77,13 @@ Record the three IP addresses of the dnsmasq servers.
 <img src="./images/pcf-a9s-consul-dns-status-page.png" alt="screenshot of a9s Consul DNS for PCF tile" />
 
 
-##<a id='configure-consul-ips'></a> 4. Register the dnsmasq IP Addresses in the Appropriate Subnets of the PCF Ops Manager Director
+##<a id='configure-consul-ips'></a> 4. Register the dnsmasq IP Addresses in the Appropriate Subnets of the BOSH Director
 
 **After this step each DNS lookup made by applications running in the Pivotal Elastic Runtime will be routed to the a9s Consul DNS for PCF tile.**
 
-The settings in this step differ regarding to the networks configured in the PCF Ops Manager Director. See "<a href="#review-net">Review network configuration in the PCF Ops Director</a>".
+The settings in this step differ regarding to the networks configured in the BOSH Director. See "<a href="#review-net">Review network configuration in the PCF Ops Director</a>".
 
 <ul>
-  <li>If you have created a dedicated network for the a9s Consul DNS tile, go to the <b>Create Network</b> section of the PCF Ops Manager Director and replace the DNS IP addresses in the Network where the Pivotal Elastic Runtime is running. Configure at least two out of the three IP addresses you noted in step 3 in this field. <b>Note:</b> Don't change the DNS settings of the network you have created for the a9s Consul DNS for PCF tile.</li>
-  <li>If you have three subnets in you PCF Ops Manager Director configured, go to the PCF Ops Manager Director <b>Create Network</b> section and configure two of the three IP addresses (from step 3) in the DNS field of each subnet. <b>Attention:</b> For each subnet, ensure that you did not configure the IP address that belongs to the subnet itself and configure the two IP addresses that belong to the other subnets instead.</li>
+  <li>If you have created a dedicated network for the a9s Consul DNS tile, go to the <b>Create Network</b> section of the BOSH Director and replace the DNS IP addresses in the Network where the Pivotal Elastic Runtime is running. Configure at least two out of the three IP addresses you noted in step 3 in this field. <b>Note:</b> Don't change the DNS settings of the network you have created for the a9s Consul DNS for PCF tile.</li>
+  <li>If you have three subnets in you BOSH Director configured, go to the BOSH Director <b>Create Network</b> section and configure two of the three IP addresses (from step 3) in the DNS field of each subnet. <b>Attention:</b> For each subnet, ensure that you did not configure the IP address that belongs to the subnet itself and configure the two IP addresses that belong to the other subnets instead.</li>
 </ul>
