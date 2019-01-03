@@ -1,3 +1,5 @@
+## Tile Retired from Pivotal Network. This Documentation Repo is now obsolete.
+
 Product name is a9s Consul DNS for PCF 
 
 ## Pivotal Cloud Foundry Partners Template
